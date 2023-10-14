@@ -32,3 +32,19 @@ ratesBoard.getRates = () => {
 
 ratesBoard.getRates();
 setInterval(ratesBoard.getRates, 60000);
+
+// Операции с деньгами
+const moneyManager = new MoneyManager();
+
+moneyManager.addMoneyCallback = (data) => {
+  ApiConnector.addMoney(data, (response) => {
+    if (response.success) {
+      ProfileWidget.showProfile(response.data);
+    }
+
+    moneyManager.setMessage(
+      response.success,
+      response.error ?? `Пополнение баланса : ${data.amount} ${data.currency}`
+    );
+  });
+};
