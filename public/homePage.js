@@ -14,7 +14,21 @@ logoutButton.action = () => {
 // получение данных о пользователе
 const current = ApiConnector.current((response) => {
   if (response.success) {
-    console.log(response);
     ProfileWidget.showProfile(response.data);
   }
 });
+
+// Получение текущих курсов валюты
+const ratesBoard = new RatesBoard();
+
+ratesBoard.getRates = () => {
+  ApiConnector.getStocks((response) => {
+    if (response.success) {
+      ratesBoard.clearTable();
+      ratesBoard.fillTable(response.data);
+    }
+  });
+};
+
+ratesBoard.getRates();
+setInterval(ratesBoard.getRates, 60000);
