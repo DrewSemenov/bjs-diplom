@@ -48,3 +48,28 @@ moneyManager.addMoneyCallback = (data) => {
     );
   });
 };
+
+moneyManager.conversionMoneyCallback = (data) => {
+  ApiConnector.convertMoney(data, (response) => {
+    let targetAmount;
+
+    if (response.success) {
+      const prevBalanceTargetCurrency = document.querySelector(
+        `[data-user-wallet-${data.targetCurrency}]`
+      ).textContent;
+      targetAmount =
+        response.data.balance[data.targetCurrency] -
+        Number(prevBalanceTargetCurrency);
+      ProfileWidget.showProfile(response.data);
+    }
+
+    moneyManager.setMessage(
+      response.success,
+      response.error ??
+        `Конвертация 
+         ${data.fromAmount} ${data.fromCurrency} в ${targetAmount.toFixed(2)} ${
+          data.targetCurrency
+        }`
+    );
+  });
+};
