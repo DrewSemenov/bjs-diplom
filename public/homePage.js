@@ -50,16 +50,17 @@ moneyManager.addMoneyCallback = (data) => {
 };
 
 moneyManager.conversionMoneyCallback = (data) => {
-  ApiConnector.convertMoney(data, (response) => {
-    let targetAmount;
+  let targetAmount;
 
+  ApiConnector.current((response) => {
     if (response.success) {
-      const prevBalanceTargetCurrency = document.querySelector(
-        `[data-user-wallet-${data.targetCurrency}]`
-      ).textContent;
-      targetAmount =
-        response.data.balance[data.targetCurrency] -
-        Number(prevBalanceTargetCurrency);
+      targetAmount = response.data.balance[data.targetCurrency];
+    }
+  });
+
+  ApiConnector.convertMoney(data, (response) => {
+    if (response.success) {
+      targetAmount = response.data.balance[data.targetCurrency] - targetAmount;
       ProfileWidget.showProfile(response.data);
     }
 
@@ -73,3 +74,4 @@ moneyManager.conversionMoneyCallback = (data) => {
     );
   });
 };
+
