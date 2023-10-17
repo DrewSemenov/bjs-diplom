@@ -8,7 +8,7 @@ userForm.loginFormCallback = (data) => {
       location.reload();
     }
 
-    userForm.setLoginErrorMessage(response.error);
+    userForm.setLoginErrorMessage(response.error ?? 'Авторизация выполнена');
   });
 };
 
@@ -18,6 +18,8 @@ userForm.registerFormCallback = (data) => {
       location.reload();
     }
 
-    userForm.setRegisterErrorMessage(response.error);
+    userForm.setRegisterErrorMessage(
+      response.error ?? 'Регистрация пользователя'
+    );
   });
 };

@@ -75,3 +75,64 @@ moneyManager.conversionMoneyCallback = (data) => {
   });
 };
 
+moneyManager.sendMoneyCallback = (data) => {
+  ApiConnector.transferMoney(data, (response) => {
+    if (response.success) {
+      ProfileWidget.showProfile(response.data);
+    }
+
+    moneyManager.setMessage(
+      response.success,
+      response.error ??
+        `Перевод выполнен 
+      ${data.amount} ${data.currency}`
+    );
+  });
+};
+
+// Работа с избранным
+
+const favoritesWidget = new FavoritesWidget();
+
+favoritesWidget.getFavorites = () => {
+  ApiConnector.getFavorites((response) => {
+    if (response.success) {
+      favoritesWidget.clearTable();
+      favoritesWidget.fillTable(response.data);
+      moneyManager.updateUsersList(response.data);
+    }
+  });
+};
+
+favoritesWidget.getFavorites();
+
+favoritesWidget.addUserCallback = (data) => {
+  ApiConnector.addUserToFavorites(data, (response) => {
+    if (response.success) {
+      favoritesWidget.clearTable();
+      favoritesWidget.fillTable(response.data);
+      moneyManager.updateUsersList(response.data);
+    }
+
+    favoritesWidget.setMessage(
+      response.success,
+      response.error ?? `${data.name} добален в избранное`
+    );
+  });
+};
+
+favoritesWidget.removeUserCallback = (data) => {
+  ApiConnector.removeUserFromFavorites(data, (response) => {
+    if (response.success) {
+      favoritesWidget.clearTable();
+      favoritesWidget.fillTable(response.data);
+      moneyManager.updateUsersList(response.data);
+    }
+
+    favoritesWidget.setMessage(
+      response.success,
+      response.error ?? 'Пользователь успешно удалён'
+    );
+  });
+};
+
